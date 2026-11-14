@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Panirdrop v26.12.0 - Raw File Vault & Cross-Platform Transfer</title>
+    <title>Panirdrop v26.14.0 - Raw File Vault & Cross-Platform Transfer</title>
 
     <!-- iOS & Android PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#021D24">
 
     <!-- Embedded PWA Manifest Data URL -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Panirdrop%20v26.12.0%22%2C%22short_name%22%3A%22Panirdrop%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23021D24%22%2C%22theme_color%22%3A%22%23021D24%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2F021D24%2FC7E5F2%3Ftext%3DPND%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Panirdrop%20v26.14.0%22%2C%22short_name%22%3A%22Panirdrop%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23021D24%22%2C%22theme_color%22%3A%22%23021D24%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2F021D24%2FC7E5F2%3Ftext%3DPND%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +22,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        /* STRICT WEBKIT & SVG HARDENING RESET */
+        /* STRICT WEBKIT & OVERFLOW HARDENING RESET */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            -webkit-text-size-adjust: 100%;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -32,8 +41,8 @@
         svg {
             display: inline-block;
             vertical-align: middle;
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 100% !important;
+            max-height: 100% !important;
             flex-shrink: 0 !important;
         }
 
@@ -65,29 +74,41 @@
             background-attachment: fixed;
             color: #021D24;
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Glossy Dark Marine Teal Pill Cards */
+        /* CLASSIC CSS COLOR ENGINE FALLBACK (iOS 12 Safari Fix) */
         .glossy-pill-dark {
-            background: linear-gradient(145deg, #021D24 0%, #042933 45%, #093F52 100%);
-            box-shadow: 0 16px 36px -10px rgba(2, 29, 36, 0.45), inset 0 1px 1px rgba(199, 229, 242, 0.35);
-            border: 1px solid rgba(101, 167, 194, 0.25);
+            background-color: #021D24 !important;
+            background: linear-gradient(145deg, rgba(2, 29, 36, 0.98) 0%, rgba(4, 41, 51, 0.95) 45%, rgba(9, 63, 82, 0.95) 100%) !important;
+            box-shadow: 0 16px 36px -10px rgba(2, 29, 36, 0.45), inset 0 1px 1px rgba(199, 229, 242, 0.35) !important;
+            border: 1px solid rgba(101, 167, 194, 0.35) !important;
+            color: #FFFFFF !important;
+        }
+
+        .glossy-pill-dark h2,
+        .glossy-pill-dark h3,
+        .glossy-pill-dark span,
+        .glossy-pill-dark p {
+            color: #FFFFFF !important;
+        }
+
+        .text-cyan-bright {
+            color: #C7E5F2 !important;
         }
 
         /* Primary Marine Teal Button */
         .glossy-button-primary {
-            background: linear-gradient(135deg, #216A85 0%, #65A7C2 100%);
-            box-shadow: 0 8px 24px -4px rgba(33, 106, 133, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(199, 229, 242, 0.3);
+            background: linear-gradient(135deg, #216A85 0%, #65A7C2 100%) !important;
+            box-shadow: 0 8px 24px -4px rgba(33, 106, 133, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+            border: 1px solid rgba(199, 229, 242, 0.3) !important;
+            color: #FFFFFF !important;
             transition: all 0.2s ease;
         }
 
         .glossy-button-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 12px 28px -2px rgba(33, 106, 133, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 28px -2px rgba(33, 106, 133, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
         }
 
         .glossy-button-primary:active {
@@ -96,11 +117,20 @@
 
         /* Glassmorphism Light Card */
         .glass-card-light {
-            background: rgba(255, 255, 255, 0.88);
+            background-color: rgba(255, 255, 255, 0.92) !important;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(199, 229, 242, 0.8);
-            box-shadow: 0 12px 32px -8px rgba(2, 29, 36, 0.08);
+            border: 1px solid rgba(199, 229, 242, 0.8) !important;
+            box-shadow: 0 12px 32px -8px rgba(2, 29, 36, 0.08) !important;
+        }
+
+        /* Scrollable container for mobile buttons */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         video {
@@ -123,9 +153,9 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- HEADER BRANDING, VERSION BADGE & TOP-RIGHT CONTROLS -->
-    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-[#C7E5F2]/80 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- HEADER BRANDING, VERSION BADGE & HORIZONTALLY PROTECTED TOP CONTROLS -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#C7E5F2]/80 shadow-sm w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 overflow-hidden">
             
             <div class="flex items-center space-x-3 shrink-0">
                 <div class="w-10 h-10 rounded-2xl glossy-pill-dark flex items-center justify-center shadow-md shrink-0">
@@ -135,32 +165,32 @@
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <h1 class="font-extrabold text-xl tracking-tight text-[#021D24]">Panirdrop</h1>
-                        <span class="px-2.5 py-0.5 rounded-full bg-[#216A85] text-white font-mono text-[11px] font-bold tracking-wider shadow-sm shrink-0">
-                            v26.12.0
+                        <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-[#021D24]">Panirdrop</h1>
+                        <span class="px-2 py-0.5 rounded-full bg-[#216A85] text-white font-mono text-[10px] sm:text-[11px] font-bold tracking-wider shadow-sm shrink-0">
+                            v26.14.0
                         </span>
                     </div>
-                    <p class="text-xs text-[#093F52] font-medium hidden sm:block">Universal iOS & Android Support</p>
+                    <p class="text-[11px] text-[#093F52] font-medium hidden sm:block">Universal iOS & Android Support</p>
                 </div>
             </div>
 
-            <!-- Top-Right Controls -->
-            <div class="flex items-center space-x-2 shrink-0">
-                <button onclick="openJoinModal()" class="px-3 py-1.5 bg-[#093F52] hover:bg-[#021D24] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0 transition-all">
+            <!-- Scrollable Action Button Wrapper for Mobile -->
+            <div class="flex items-center space-x-2 shrink-0 overflow-x-auto no-scrollbar py-1 max-w-[55%] sm:max-w-none">
+                <button onclick="openJoinModal()" class="px-3 py-1.5 bg-[#093F52] hover:bg-[#021D24] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0 transition-all whitespace-nowrap">
                     <svg class="icon-svg-sm text-[#C7E5F2]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                     </svg>
                     <span>Masukan Kode</span>
                 </button>
 
-                <button onclick="openInstallAppModal()" class="px-3 py-1.5 glossy-button-primary text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0">
+                <button onclick="openInstallAppModal()" class="px-3 py-1.5 glossy-button-primary text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0 whitespace-nowrap">
                     <svg class="icon-svg-sm text-white" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
                     <span>Pasang App</span>
                 </button>
 
-                <button onclick="openStorageModal()" class="px-3 py-1.5 bg-white/80 hover:bg-white border border-[#65A7C2]/40 text-[#093F52] rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm shrink-0">
+                <button onclick="openStorageModal()" class="px-3 py-1.5 bg-white/80 hover:bg-white border border-[#65A7C2]/40 text-[#093F52] rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm shrink-0 whitespace-nowrap">
                     <svg class="icon-svg-sm text-[#216A85]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -171,18 +201,18 @@
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- MAIN CONTAINER - RESPONSIVE 2-COLUMN GRID (LAPTOP/DESKTOP) & SINGLE COLUMN (MOBILE) -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
 
         <!-- UPLOAD PANEL & RECEIVER QR SECTION -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            <!-- Left: File Upload Panel -->
-            <div class="lg:col-span-7 glossy-pill-dark rounded-3xl p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden">
+            <!-- Left Column: Upload Box & Main Intro -->
+            <div class="lg:col-span-7 glossy-pill-dark rounded-3xl p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden space-y-6">
                 <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-[#65A7C2]/20 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="space-y-4 relative z-10">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs text-[#C7E5F2] font-semibold">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs text-cyan-bright font-semibold">
                         <svg class="icon-svg-xs text-[#65A7C2] animate-pulse" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="8"></circle>
                         </svg>
@@ -193,16 +223,16 @@
                         Transfer Berkas & Foto Raw Preserved
                     </h2>
 
-                    <p class="text-sm text-[#C7E5F2]/90 leading-relaxed max-w-xl">
+                    <p class="text-xs sm:text-sm text-cyan-bright leading-relaxed max-w-xl">
                         Kirim foto, video (.MOV/.MP4), HEIC, dan dokumen tanpa kompresi. Metadata EXIF (ISO, Shutter, Aperture, Model Kamera) 100% terjaga di semua perangkat iOS dan Android.
                     </p>
                 </div>
 
-                <div class="mt-8 relative z-10 space-y-4">
+                <div class="relative z-10 space-y-4 pt-2">
                     <input type="file" id="file-input" multiple accept="image/*,.heic,.heif,video/*,.mov,.mp4,.pdf,.doc,.docx" class="hidden" onchange="handleFileSelection(event)">
                     
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                        <button onclick="triggerFileChoose()" class="px-8 py-4 glossy-button-primary rounded-2xl text-white font-bold text-base flex items-center justify-center space-x-3 shadow-xl shrink-0">
+                        <button onclick="triggerFileChoose()" class="px-8 py-4 glossy-button-primary rounded-2xl text-white font-bold text-base flex items-center justify-center space-x-3 shadow-xl shrink-0 w-full sm:w-auto">
                             <svg class="icon-svg-lg text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -210,7 +240,7 @@
                         </button>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-[#C7E5F2]/90">
+                    <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-cyan-bright">
                         <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">📷 Foto: JPG, PNG, WEBP, HEIC</span>
                         <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">🎬 Video: MP4, MOV (Raw Uint8 Stream)</span>
                         <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">📄 Dokumen: PDF, DOC, DOCX</span>
@@ -218,7 +248,7 @@
                 </div>
             </div>
 
-            <!-- Right: Canvas QR Code Engine -->
+            <!-- Right Column: Canvas QR Code & 6-Digit Pairing Card -->
             <div class="lg:col-span-5 glass-card-light rounded-3xl p-6 flex flex-col items-center justify-between text-center space-y-4">
                 <div class="w-full text-left">
                     <div class="flex items-center justify-between">
@@ -233,16 +263,16 @@
                     <p class="text-xs text-[#093F52]/70 mt-0.5">Pindai QR ini dari perangkat penerima untuk terhubung</p>
                 </div>
 
-                <!-- Always Rendered Canvas QR -->
-                <div class="p-3 bg-white rounded-2xl border-2 border-[#C7E5F2] shadow-md flex items-center justify-center shrink-0">
-                    <canvas id="qr-canvas" width="200" height="200" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
+                <!-- Always Rendered Pure HTML5 Canvas QR -->
+                <div class="p-3 bg-white rounded-2xl border-2 border-[#C7E5F2] shadow-md flex items-center justify-center shrink-0 max-w-full">
+                    <canvas id="qr-canvas" width="200" height="200" class="w-40 h-40 sm:w-48 sm:h-48 block max-w-full"></canvas>
                 </div>
 
                 <!-- 6-Digit Code Box with Randomize Button -->
                 <div class="w-full p-3 bg-[#EAF5FA] border border-[#C7E5F2] rounded-2xl flex items-center justify-between gap-2">
                     <div class="text-left">
                         <div class="text-[10px] uppercase tracking-wider font-bold text-[#093F52]/70">Kode Perangkat Ini</div>
-                        <div id="transfer-code-display" class="font-mono text-lg font-black text-[#021D24] tracking-widest">PND-849201</div>
+                        <div id="transfer-code-display" class="font-mono text-base sm:text-lg font-black text-[#021D24] tracking-widest">PND-849201</div>
                     </div>
                     
                     <div class="flex items-center space-x-1.5 shrink-0">
@@ -326,7 +356,7 @@
     <footer class="mt-auto py-6 bg-white/60 backdrop-blur-md border-t border-[#C7E5F2]/80 text-center text-xs text-[#093F52]">
         <div class="max-w-7xl mx-auto px-4 space-y-1">
             <p class="font-bold">Metadata EXIF & Raw File Preserved Across All Devices</p>
-            <p class="text-[11px] text-[#093F52]/70">Original copyright by pannniki • Panirdrop v26.12.0</p>
+            <p class="text-[11px] text-[#093F52]/70">Original copyright by pannniki • Panirdrop v26.14.0</p>
         </div>
     </footer>
 
@@ -347,7 +377,7 @@
                 </button>
             </div>
 
-            <p class="text-xs text-[#C7E5F2]/80 leading-relaxed">
+            <p class="text-xs text-cyan-bright leading-relaxed">
                 Masukkan 6 digit kode yang tampil di perangkat lain untuk terhubung dan mengunduh berkas.
             </p>
 
@@ -517,7 +547,7 @@
                     <svg class="icon-svg-md text-[#216A85]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span>Storage & EXIF Info (v26.12.0)</span>
+                    <span>Storage & EXIF Info (v26.14.0)</span>
                 </h3>
                 <button onclick="closeStorageModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
                     <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -649,7 +679,7 @@
         })();
 
         /* IndexedDB Core Engine */
-        var DB_NAME = 'PanirdropVaultDB_v26120';
+        var DB_NAME = 'PanirdropVaultDB_v26140';
         var DB_VERSION = 1;
         var STORE_NAME = 'files';
         var dbInstance = null;
@@ -991,7 +1021,7 @@
                         var blobUrl = window.URL.createObjectURL(content);
                         var a = document.createElement('a');
                         a.href = blobUrl;
-                        a.download = "Panirdrop_Vault_v26.12.0.zip";
+                        a.download = "Panirdrop_Vault_v26.14.0.zip";
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
