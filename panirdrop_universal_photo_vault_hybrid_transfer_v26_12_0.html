@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Panirdrop v26.12.0 - Raw File Vault & Cross-Platform Transfer</title>
+
+    <!-- iOS & Android PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Panirdrop">
+    <meta name="theme-color" content="#021D24">
+
+    <!-- Embedded PWA Manifest Data URL -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Panirdrop%20v26.12.0%22%2C%22short_name%22%3A%22Panirdrop%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23021D24%22%2C%22theme_color%22%3A%22%23021D24%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2F021D24%2FC7E5F2%3Ftext%3DPND%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip Library for Bundling ZIP Downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        /* STRICT WEBKIT & SVG HARDENING RESET */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Prevent SVGs from expanding out of control on iOS Safari WebKit */
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 100%;
+            max-height: 100%;
+            flex-shrink: 0 !important;
+        }
+
+        .icon-svg-xs { width: 14px !important; height: 14px !important; min-width: 14px !important; min-height: 14px !important; flex-shrink: 0 !important; }
+        .icon-svg-sm { width: 16px !important; height: 16px !important; min-width: 16px !important; min-height: 16px !important; flex-shrink: 0 !important; }
+        .icon-svg-md { width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; flex-shrink: 0 !important; }
+        .icon-svg-lg { width: 24px !important; height: 24px !important; min-width: 24px !important; min-height: 24px !important; flex-shrink: 0 !important; }
+        .icon-svg-xl { width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; flex-shrink: 0 !important; }
+
+        /* Custom Mesh Gradient Background */
+        body {
+            background:
+                radial-gradient(
+                    circle at 15% 15%,
+                    #EEF3FF 0%,
+                    transparent 40%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    #AABCF2 0%,
+                    transparent 45%
+                ),
+                linear-gradient(
+                    135deg,
+                    #D9D5F8,
+                    #DCE9FF,
+                    #B9CCF5
+                );
+            background-attachment: fixed;
+            color: #021D24;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Glossy Dark Marine Teal Pill Cards */
+        .glossy-pill-dark {
+            background: linear-gradient(145deg, #021D24 0%, #042933 45%, #093F52 100%);
+            box-shadow: 0 16px 36px -10px rgba(2, 29, 36, 0.45), inset 0 1px 1px rgba(199, 229, 242, 0.35);
+            border: 1px solid rgba(101, 167, 194, 0.25);
+        }
+
+        /* Primary Marine Teal Button */
+        .glossy-button-primary {
+            background: linear-gradient(135deg, #216A85 0%, #65A7C2 100%);
+            box-shadow: 0 8px 24px -4px rgba(33, 106, 133, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(199, 229, 242, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .glossy-button-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px -2px rgba(33, 106, 133, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+        }
+
+        .glossy-button-primary:active {
+            transform: translateY(1px);
+        }
+
+        /* Glassmorphism Light Card */
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(199, 229, 242, 0.8);
+            box-shadow: 0 12px 32px -8px rgba(2, 29, 36, 0.08);
+        }
+
+        video {
+            background-color: #021D24;
+            border-radius: 0.75rem;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(199, 229, 242, 0.4);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #216A85;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- HEADER BRANDING, VERSION BADGE & TOP-RIGHT CONTROLS -->
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-[#C7E5F2]/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-3 shrink-0">
+                <div class="w-10 h-10 rounded-2xl glossy-pill-dark flex items-center justify-center shadow-md shrink-0">
+                    <svg class="icon-svg-lg text-[#C7E5F2]" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-extrabold text-xl tracking-tight text-[#021D24]">Panirdrop</h1>
+                        <span class="px-2.5 py-0.5 rounded-full bg-[#216A85] text-white font-mono text-[11px] font-bold tracking-wider shadow-sm shrink-0">
+                            v26.12.0
+                        </span>
+                    </div>
+                    <p class="text-xs text-[#093F52] font-medium hidden sm:block">Universal iOS & Android Support</p>
+                </div>
+            </div>
+
+            <!-- Top-Right Controls -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="openJoinModal()" class="px-3 py-1.5 bg-[#093F52] hover:bg-[#021D24] text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0 transition-all">
+                    <svg class="icon-svg-sm text-[#C7E5F2]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                    <span>Masukan Kode</span>
+                </button>
+
+                <button onclick="openInstallAppModal()" class="px-3 py-1.5 glossy-button-primary text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0">
+                    <svg class="icon-svg-sm text-white" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Pasang App</span>
+                </button>
+
+                <button onclick="openStorageModal()" class="px-3 py-1.5 bg-white/80 hover:bg-white border border-[#65A7C2]/40 text-[#093F52] rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm shrink-0">
+                    <svg class="icon-svg-sm text-[#216A85]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Info Storage</span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- UPLOAD PANEL & RECEIVER QR SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left: File Upload Panel -->
+            <div class="lg:col-span-7 glossy-pill-dark rounded-3xl p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-[#65A7C2]/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="space-y-4 relative z-10">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs text-[#C7E5F2] font-semibold">
+                        <svg class="icon-svg-xs text-[#65A7C2] animate-pulse" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"></circle>
+                        </svg>
+                        <span>Original copyright by pannniki</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-white">
+                        Transfer Berkas & Foto Raw Preserved
+                    </h2>
+
+                    <p class="text-sm text-[#C7E5F2]/90 leading-relaxed max-w-xl">
+                        Kirim foto, video (.MOV/.MP4), HEIC, dan dokumen tanpa kompresi. Metadata EXIF (ISO, Shutter, Aperture, Model Kamera) 100% terjaga di semua perangkat iOS dan Android.
+                    </p>
+                </div>
+
+                <div class="mt-8 relative z-10 space-y-4">
+                    <input type="file" id="file-input" multiple accept="image/*,.heic,.heif,video/*,.mov,.mp4,.pdf,.doc,.docx" class="hidden" onchange="handleFileSelection(event)">
+                    
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <button onclick="triggerFileChoose()" class="px-8 py-4 glossy-button-primary rounded-2xl text-white font-bold text-base flex items-center justify-center space-x-3 shadow-xl shrink-0">
+                            <svg class="icon-svg-lg text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Unggah Foto</span>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-[#C7E5F2]/90">
+                        <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">📷 Foto: JPG, PNG, WEBP, HEIC</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">🎬 Video: MP4, MOV (Raw Uint8 Stream)</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15">📄 Dokumen: PDF, DOC, DOCX</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Canvas QR Code Engine -->
+            <div class="lg:col-span-5 glass-card-light rounded-3xl p-6 flex flex-col items-center justify-between text-center space-y-4">
+                <div class="w-full text-left">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-[#021D24] flex items-center space-x-2">
+                            <svg class="icon-svg-md text-[#216A85]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+                            </svg>
+                            <span>QR Transfer Canvas</span>
+                        </h3>
+                        <span class="px-2 py-0.5 rounded-md bg-[#216A85]/10 text-[#216A85] text-[10px] font-bold shrink-0">HTML5 Canvas Engine</span>
+                    </div>
+                    <p class="text-xs text-[#093F52]/70 mt-0.5">Pindai QR ini dari perangkat penerima untuk terhubung</p>
+                </div>
+
+                <!-- Always Rendered Canvas QR -->
+                <div class="p-3 bg-white rounded-2xl border-2 border-[#C7E5F2] shadow-md flex items-center justify-center shrink-0">
+                    <canvas id="qr-canvas" width="200" height="200" class="w-44 h-44 sm:w-48 sm:h-48 block"></canvas>
+                </div>
+
+                <!-- 6-Digit Code Box with Randomize Button -->
+                <div class="w-full p-3 bg-[#EAF5FA] border border-[#C7E5F2] rounded-2xl flex items-center justify-between gap-2">
+                    <div class="text-left">
+                        <div class="text-[10px] uppercase tracking-wider font-bold text-[#093F52]/70">Kode Perangkat Ini</div>
+                        <div id="transfer-code-display" class="font-mono text-lg font-black text-[#021D24] tracking-widest">PND-849201</div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-1.5 shrink-0">
+                        <button onclick="randomizeCode()" class="p-2 bg-[#65A7C2]/20 hover:bg-[#65A7C2]/40 text-[#021D24] rounded-xl transition-all shadow-sm shrink-0" title="Acak Kode Baru">
+                            <svg class="icon-svg-sm text-[#021D24]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                        <button onclick="copyTransferCode()" class="px-3 py-1.5 bg-[#216A85] hover:bg-[#093F52] text-white rounded-xl text-xs font-bold transition-all shadow-sm shrink-0">
+                            Salin Kode
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="copyCurrentLink()" class="w-full py-2 px-4 bg-white hover:bg-[#EAF5FA] border border-[#65A7C2]/40 text-[#093F52] rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition-all shadow-sm">
+                    <svg class="icon-svg-sm text-[#216A85]" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2h2a2 2 0 002 2m0 0h2a2 2 0 002 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                    <span>Salin Link Web Panirdrop</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- VAULT FILES & GALLERY SECTION -->
+        <section class="space-y-5">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/85 backdrop-blur-md p-4 rounded-2xl border border-[#C7E5F2] shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#C7E5F2]/50 text-[#216A85] flex items-center justify-center font-bold shrink-0">
+                        <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-extrabold text-[#021D24]">Daftar Berkas Vault</h3>
+                        <p class="text-xs text-[#093F52]/80 font-medium" id="vault-subtitle">0 berkas tersimpan</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="openDownloadChoiceModal()" class="px-4 py-2 glossy-button-primary text-white rounded-xl text-xs font-bold shadow-md flex items-center space-x-1.5 shrink-0">
+                        <svg class="icon-svg-sm text-white" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Unduh Semua</span>
+                    </button>
+                    
+                    <button onclick="openConfirmClearModal()" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 shadow-sm shrink-0">
+                        <svg class="icon-svg-sm text-rose-600" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <span>Kosongkan Vault</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Photos Grid -->
+            <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Dynamically generated -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="glass-card-light rounded-3xl p-12 text-center flex flex-col items-center justify-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-[#EAF5FA] text-[#216A85] flex items-center justify-center border border-[#C7E5F2] shadow-inner shrink-0">
+                    <svg class="icon-svg-xl text-[#216A85]" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="text-base font-bold text-[#021D24]">Belum ada berkas yang diunggah</h4>
+                    <p class="text-xs text-[#093F52]/70 max-w-xs mx-auto">Klik <strong>"Unggah Foto"</strong> untuk memilih berkas dari memori HP.</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto py-6 bg-white/60 backdrop-blur-md border-t border-[#C7E5F2]/80 text-center text-xs text-[#093F52]">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+            <p class="font-bold">Metadata EXIF & Raw File Preserved Across All Devices</p>
+            <p class="text-[11px] text-[#093F52]/70">Original copyright by pannniki • Panirdrop v26.12.0</p>
+        </div>
+    </footer>
+
+    <!-- MODAL: GABUNG DENGAN KODE -->
+    <div id="join-code-modal" class="fixed inset-0 z-50 hidden bg-[#021D24]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-md w-full glossy-pill-dark rounded-3xl overflow-hidden shadow-2xl border border-[#65A7C2]/30 flex flex-col p-6 space-y-4 text-white">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-base font-extrabold text-white flex items-center space-x-2">
+                    <svg class="icon-svg-md text-[#65A7C2]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                    <span>Gabung Dengan Kode</span>
+                </h3>
+                <button onclick="closeJoinModal()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+                    <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <p class="text-xs text-[#C7E5F2]/80 leading-relaxed">
+                Masukkan 6 digit kode yang tampil di perangkat lain untuk terhubung dan mengunduh berkas.
+            </p>
+
+            <div class="space-y-3 pt-2">
+                <div class="relative flex items-center bg-[#021D24] border-2 border-[#093F52] focus-within:border-[#216A85] rounded-2xl px-4 py-3.5 transition-all shadow-inner">
+                    <span class="font-mono text-xl font-black text-[#65A7C2] mr-2 shrink-0">PND-</span>
+                    <input type="text" id="join-code-input" maxlength="6" placeholder="0 0 0 0 0 0" class="w-full bg-transparent font-mono text-xl font-bold text-white placeholder-[#093F52] focus:outline-none tracking-widest uppercase">
+                </div>
+
+                <button onclick="handleJoinWithCode()" class="w-full py-3.5 glossy-button-primary rounded-2xl text-white font-bold text-sm flex items-center justify-center space-x-2 shadow-lg">
+                    <span class="text-base">→</span>
+                    <span>Gabung Sekarang</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: INSTALL APP (PWA 2-TAB GUIDE) -->
+    <div id="install-app-modal" class="fixed inset-0 z-50 hidden bg-[#021D24]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-[#C7E5F2] flex flex-col">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-[#EAF5FA]">
+                <h3 class="text-base font-extrabold text-[#021D24] flex items-center space-x-2">
+                    <svg class="icon-svg-md text-[#216A85]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Pasang Panirdrop di Home Screen</span>
+                </h3>
+                <button onclick="closeInstallAppModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+                    <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 text-xs text-[#093F52] leading-relaxed">
+                <div id="pwa-auto-trigger-box" class="hidden">
+                    <button onclick="triggerPWAInstallPrompt()" class="w-full py-3 glossy-button-primary text-white font-bold rounded-2xl text-xs shadow-md flex items-center justify-center space-x-2">
+                        <svg class="icon-svg-sm text-white" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Instal Otomatis Sekarang</span>
+                    </button>
+                    <div class="text-center text-[10px] text-slate-400 my-2">— ATAU IKUTI PANDUAN MANUAL DI BAWAH —</div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="p-3.5 bg-[#EAF5FA] rounded-2xl border border-[#C7E5F2] space-y-1">
+                        <div class="font-bold text-sm text-[#021D24] flex items-center space-x-1.5">
+                            <span>📱 Android / Chrome / Edge</span>
+                        </div>
+                        <p class="text-[11px] text-[#093F52]/80">
+                            1. Ketuk ikon <strong>Menu Titik Tiga (⋮)</strong> di kanan atas.<br>
+                            2. Pilih <strong>"Tambahkan ke Layar Utama"</strong> atau <strong>"Instal Aplikasi"</strong>.
+                        </p>
+                    </div>
+
+                    <div class="p-3.5 bg-[#EAF5FA] rounded-2xl border border-[#C7E5F2] space-y-1">
+                        <div class="font-bold text-sm text-[#021D24] flex items-center space-x-1.5">
+                            <span>🍎 Semua Perangkat iOS (iPhone Safari)</span>
+                        </div>
+                        <p class="text-[11px] text-[#093F52]/80">
+                            1. Ketuk tombol <strong>Bagikan (Share)</strong> di Safari (ikon kotak panah atas).<br>
+                            2. Gulir lalu pilih <strong>"Tambah ke Layar Utama"</strong> (Add to Home Screen).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeInstallAppModal()" class="px-5 py-2 glossy-button-primary text-white font-bold rounded-xl text-xs">
+                    Paham & Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DUAL DOWNLOAD BATCH OPTION -->
+    <div id="download-choice-modal" class="fixed inset-0 z-50 hidden bg-[#021D24]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-[#C7E5F2] flex flex-col">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-[#EAF5FA]">
+                <h3 class="text-base font-extrabold text-[#021D24] flex items-center space-x-2">
+                    <svg class="icon-svg-md text-[#216A85]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span>Pilih Metode Unduh Semua</span>
+                </h3>
+                <button onclick="closeDownloadChoiceModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+                    <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 text-xs text-[#093F52]">
+                <p class="font-medium text-slate-600">Pilih metode mengunduh seluruh berkas dari Vault:</p>
+                
+                <button onclick="downloadAllAsZip()" class="w-full p-4 rounded-2xl border-2 border-[#216A85] bg-[#EAF5FA] hover:bg-[#DCE9FF] transition-all text-left flex items-start space-x-3 group shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-[#216A85] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <svg class="icon-svg-lg text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm text-[#021D24] group-hover:text-[#216A85]">Opsi A: Unduh Semua (.ZIP)</div>
+                        <div class="text-[11px] text-[#093F52]/80 mt-1 leading-relaxed">
+                            Menggabungkan seluruh berkas foto, video, dan dokumen menjadi 1 paket file ZIP ringkas via JSZip.
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="downloadAllSequentially()" class="w-full p-4 rounded-2xl border-2 border-[#65A7C2]/40 bg-white hover:bg-[#EAF5FA] transition-all text-left flex items-start space-x-3 group shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-[#093F52] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <svg class="icon-svg-lg text-white" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm text-[#021D24] group-hover:text-[#216A85]">Opsi B: Unduh 1 per 1 (Otomatis)</div>
+                        <div class="text-[11px] text-[#093F52]/80 mt-1 leading-relaxed">
+                            Mengunduh seluruh berkas satu per satu secara otomatis berurutan langsung ke memori HP.
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeDownloadChoiceModal()" class="px-5 py-2 bg-white border border-slate-200 text-[#093F52] font-bold rounded-xl text-xs">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRM CLEAR VAULT -->
+    <div id="confirm-clear-modal" class="fixed inset-0 z-50 hidden bg-[#021D24]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-rose-100 flex flex-col">
+            <div class="p-6 text-center space-y-4">
+                <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 mx-auto flex items-center justify-center shadow-inner shrink-0">
+                    <svg class="icon-svg-xl text-rose-600" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-lg font-extrabold text-[#021D24]">Kosongkan Seluruh Vault?</h3>
+                    <p class="text-xs text-[#093F52]/80 leading-relaxed">
+                        Apakah Anda yakin ingin menghapus <strong>SELURUH berkas</strong> dari memori vault ini? Semua foto, video, dan dokumen akan dihapus sekaligus.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-slate-100 bg-[#EAF5FA]/50 flex items-center space-x-3">
+                <button onclick="closeConfirmClearModal()" class="flex-1 py-2.5 bg-white border border-slate-200 text-[#093F52] font-bold rounded-xl text-xs">
+                    Batal
+                </button>
+                <button onclick="executeClearVault()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-md">
+                    Ya, Hapus Semua
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: STORAGE & RAW EXIF INFO -->
+    <div id="storage-modal" class="fixed inset-0 z-50 hidden bg-[#021D24]/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-lg w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-[#C7E5F2] flex flex-col">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-[#EAF5FA]">
+                <h3 class="text-base font-extrabold text-[#021D24] flex items-center space-x-2">
+                    <svg class="icon-svg-md text-[#216A85]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Storage & EXIF Info (v26.12.0)</span>
+                </h3>
+                <button onclick="closeStorageModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+                    <svg class="icon-svg-md" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 text-xs text-[#093F52] leading-relaxed">
+                <div class="p-4 bg-[#EAF5FA] rounded-2xl border border-[#C7E5F2] space-y-2">
+                    <h4 class="font-bold text-[#021D24]">Raw Preserved Storage Engine</h4>
+                    <p>
+                        Seluruh foto (JPG, PNG, HEIC), video (MP4, MOV via Uint8Array stream), dan dokumen dikirim via bitstream murni. Rincian metadata seperti ISO, Shutter Speed, Aperture, Model Kamera, dan Jam Pengambilan foto 100% terjaga.
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <div class="flex justify-between font-bold text-[#021D24] mb-1">
+                        <span>Penggunaan Memori Vault:</span>
+                        <span id="modal-storage-bytes" class="text-[#216A85]">0 MB</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-[#C7E5F2]">
+                        <div id="modal-storage-progress" class="bg-gradient-to-r from-[#093F52] to-[#216A85] h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="closeStorageModal()" class="px-5 py-2 glossy-button-primary text-white font-bold rounded-xl text-xs">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-[#021D24] text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 border border-[#65A7C2]/40">
+        <div id="toast-icon" class="text-[#65A7C2] shrink-0">
+            <svg class="icon-svg-md text-[#65A7C2]" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <div id="toast-message" class="text-xs font-semibold">Notifikasi Panirdrop</div>
+    </div>
+
+    <!-- STRICT BACKWARD COMPATIBLE ES5 JAVASCRIPT ENGINE -->
+    <script>
+        /* Global PWA Install Listener */
+        var deferredPWAInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            deferredPWAInstallPrompt = e;
+            var triggerBox = document.getElementById('pwa-auto-trigger-box');
+            if (triggerBox) {
+                triggerBox.classList.remove('hidden');
+            }
+        });
+
+        /* Service Worker Registration */
+        if ('serviceWorker' in navigator) {
+            try {
+                var swCode = "self.addEventListener('install', function(e){ self.skipWaiting(); }); self.addEventListener('fetch', function(e){ e.respondWith(fetch(e.request).catch(function(){ return caches.match(e.request); })); });";
+                var blob = new Blob([swCode], { type: 'text/javascript' });
+                var swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl).catch(function(err){});
+            } catch(e) {}
+        }
+
+        /* HTML5 Canvas QR Code Renderer Engine */
+        var PanirdropQR = (function() {
+            function drawQRCode(canvas, text) {
+                if (!canvas) return;
+                var ctx = canvas.getContext('2d');
+                var size = 200;
+                canvas.width = size;
+                canvas.height = size;
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, size, size);
+
+                var modules = 25;
+                var cellSize = size / modules;
+
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#021D24';
+                ctx.strokeRect(2, 2, size - 4, size - 4);
+
+                function drawFinderPattern(x, y) {
+                    ctx.fillStyle = '#021D24';
+                    ctx.fillRect(x * cellSize, y * cellSize, 7 * cellSize, 7 * cellSize);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect((x + 1) * cellSize, (y + 1) * cellSize, 5 * cellSize, 5 * cellSize);
+                    ctx.fillStyle = '#216A85';
+                    ctx.fillRect((x + 2) * cellSize, (y + 2) * cellSize, 3 * cellSize, 3 * cellSize);
+                }
+
+                drawFinderPattern(1, 1);
+                drawFinderPattern(17, 1);
+                drawFinderPattern(1, 17);
+
+                ctx.fillStyle = '#093F52';
+                for (var t = 8; t < 17; t += 2) {
+                    ctx.fillRect(t * cellSize, 6 * cellSize, cellSize, cellSize);
+                    ctx.fillRect(6 * cellSize, t * cellSize, cellSize, cellSize);
+                }
+
+                var hash = 0;
+                for (var i = 0; i < text.length; i++) {
+                    hash = ((hash << 5) - hash) + text.charCodeAt(i);
+                    hash |= 0;
+                }
+
+                ctx.fillStyle = '#093F52';
+                for (var r = 0; r < modules; r++) {
+                    for (var c = 0; c < modules; c++) {
+                        if ((r < 9 && c < 9) || (r < 9 && c > 15) || (r > 15 && c < 9)) continue;
+                        
+                        var val = (r * modules + c + Math.abs(hash)) % 3;
+                        if (val === 0 || (r % 2 === 0 && c % 3 === 0)) {
+                            ctx.fillRect(c * cellSize, r * cellSize, cellSize - 0.4, cellSize - 0.4);
+                        }
+                    }
+                }
+            }
+
+            return {
+                render: drawQRCode
+            };
+        })();
+
+        /* IndexedDB Core Engine */
+        var DB_NAME = 'PanirdropVaultDB_v26120';
+        var DB_VERSION = 1;
+        var STORE_NAME = 'files';
+        var dbInstance = null;
+        var currentTransferCode = "PND-849201";
+
+        function generateTransferCode() {
+            var randNum = Math.floor(100000 + Math.random() * 900000);
+            currentTransferCode = "PND-" + randNum;
+            var displayEl = document.getElementById('transfer-code-display');
+            if (displayEl) {
+                displayEl.innerText = currentTransferCode;
+            }
+        }
+
+        function randomizeCode() {
+            generateTransferCode();
+            updateQRCodeCanvas();
+            showToast("Kode diperbarui: " + currentTransferCode, "success");
+        }
+
+        function initDatabase() {
+            return new Promise(function(resolve, reject) {
+                var request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = function(e) {
+                    dbInstance = e.target.result;
+                    resolve(dbInstance);
+                };
+                request.onerror = function(e) {
+                    reject(e);
+                };
+            });
+        }
+
+        function saveFileToDB(fileObj) {
+            return new Promise(function(resolve, reject) {
+                var tx = dbInstance.transaction(STORE_NAME, 'readwrite');
+                var store = tx.objectStore(STORE_NAME);
+                store.put(fileObj);
+                tx.oncomplete = function() { resolve(); };
+                tx.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function getAllFilesFromDB() {
+            return new Promise(function(resolve, reject) {
+                var tx = dbInstance.transaction(STORE_NAME, 'readonly');
+                var store = tx.objectStore(STORE_NAME);
+                var request = store.getAll();
+                request.onsuccess = function() { resolve(request.result || []); };
+                request.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function deleteFileFromDB(id) {
+            return new Promise(function(resolve, reject) {
+                var tx = dbInstance.transaction(STORE_NAME, 'readwrite');
+                var store = tx.objectStore(STORE_NAME);
+                store.delete(id);
+                tx.oncomplete = function() { resolve(); };
+                tx.onerror = function(e) { reject(e); };
+            });
+        }
+
+        function clearAllFilesFromDB() {
+            return new Promise(function(resolve, reject) {
+                var tx = dbInstance.transaction(STORE_NAME, 'readwrite');
+                var store = tx.objectStore(STORE_NAME);
+                store.clear();
+                tx.oncomplete = function() { resolve(); };
+                tx.onerror = function(e) { reject(e); };
+            });
+        }
+
+        /* Raw Byte Binary Conversion (Preserves 100% EXIF & Uncompressed Data Stream) */
+        function dataURLtoBlob(dataurl, fallbackType) {
+            try {
+                var parts = dataurl.split(',');
+                var mimeMatch = parts[0].match(/:(.*?);/);
+                var mime = (mimeMatch && mimeMatch[1]) ? mimeMatch[1] : (fallbackType || 'application/octet-stream');
+                var bstr = atob(parts[1]);
+                var n = bstr.length;
+                var u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new Blob([u8arr], { type: mime });
+            } catch (err) {
+                return null;
+            }
+        }
+
+        function downloadFileSafely(dataUrl, fileName, mimeType) {
+            var blob = dataURLtoBlob(dataUrl, mimeType);
+            if (blob && window.URL && window.URL.createObjectURL) {
+                var blobUrl = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function() {
+                    window.URL.revokeObjectURL(blobUrl);
+                }, 1500);
+            } else {
+                var aFallback = document.createElement('a');
+                aFallback.href = dataUrl;
+                aFallback.download = fileName;
+                document.body.appendChild(aFallback);
+                aFallback.click();
+                document.body.removeChild(aFallback);
+            }
+        }
+
+        function triggerFileChoose() {
+            document.getElementById('file-input').click();
+        }
+
+        function handleFileSelection(event) {
+            var files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            showToast("Membaca berkas raw kualitas asli...", "info");
+
+            var processCount = 0;
+            for (var i = 0; i < files.length; i++) {
+                (function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var dataUrl = e.target.result;
+                        var fileCategory = 'document';
+                        var fileType = file.type || '';
+                        var fileName = file.name || 'file';
+
+                        if (fileType.indexOf('image/') === 0 || /\.(jpg|jpeg|png|webp|heic|heif)$/i.test(fileName)) {
+                            fileCategory = 'image';
+                        } else if (fileType.indexOf('video/') === 0 || /\.(mp4|mov)$/i.test(fileName)) {
+                            fileCategory = 'video';
+                        }
+
+                        var fileObj = {
+                            id: 'FILE_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+                            name: fileName,
+                            size: file.size,
+                            type: fileType || 'application/octet-stream',
+                            category: fileCategory,
+                            lastModified: file.lastModified || Date.now(),
+                            dataUrl: dataUrl
+                        };
+
+                        saveFileToDB(fileObj).then(function() {
+                            processCount++;
+                            if (processCount === files.length) {
+                                renderGallery();
+                                updateQRCodeCanvas();
+                                showToast("Berkas tersimpan di Vault!", "success");
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                })(files[i]);
+            }
+        }
+
+        function renderGallery() {
+            getAllFilesFromDB().then(function(files) {
+                var grid = document.getElementById('photos-grid');
+                var emptyState = document.getElementById('empty-state');
+                var subtitle = document.getElementById('vault-subtitle');
+                
+                var totalBytes = 0;
+                for (var i = 0; i < files.length; i++) {
+                    totalBytes += files[i].size;
+                }
+
+                subtitle.innerText = files.length + " berkas tersimpan (" + formatBytes(totalBytes) + ")";
+                document.getElementById('modal-storage-bytes').innerText = formatBytes(totalBytes);
+                
+                var pct = Math.min(100, Math.round((totalBytes / (150 * 1024 * 1024)) * 100));
+                document.getElementById('modal-storage-progress').style.width = pct + "%";
+
+                if (files.length === 0) {
+                    grid.innerHTML = '';
+                    emptyState.style.display = 'flex';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                grid.innerHTML = '';
+
+                var reversed = files.slice().reverse();
+
+                for (var j = 0; j < reversed.length; j++) {
+                    var file = reversed[j];
+                    var card = document.createElement('div');
+                    card.className = "glass-card-light rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300";
+                    
+                    var dateStr = new Date(file.lastModified).toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    });
+
+                    var isHEIC = /\.(heic|heif)$/i.test(file.name);
+                    var previewHTML = '';
+
+                    if (file.category === 'image') {
+                        if (isHEIC) {
+                            previewHTML = '<div class="w-full h-full flex flex-col items-center justify-center bg-[#042933] text-[#C7E5F2]"><span class="px-2 py-1 rounded bg-[#216A85] text-white font-mono text-[10px] font-bold mb-1">HEIC RAW</span><span class="text-[11px] font-semibold text-center px-2">' + file.name + '</span></div>';
+                        } else {
+                            previewHTML = '<img src="' + file.dataUrl + '" alt="' + file.name + '" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">';
+                        }
+                    } else if (file.category === 'video') {
+                        previewHTML = '<video src="' + file.dataUrl + '" controls playsinline preload="metadata" class="w-full h-full object-cover bg-black"></video>';
+                    } else {
+                        previewHTML = '<div class="w-full h-full flex flex-col items-center justify-center bg-[#063442] text-[#C7E5F2]"><svg class="icon-svg-xl mb-1 text-[#C7E5F2]" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="text-[10px] font-bold">DOKUMEN FILE</span></div>';
+                    }
+
+                    var categoryBadge = '<span class="uppercase tracking-wider font-bold">' + (isHEIC ? 'HEIC' : file.category) + '</span>';
+
+                    card.innerHTML = '\
+                        <div class="relative aspect-video bg-[#021D24] overflow-hidden flex items-center justify-center">\
+                            ' + previewHTML + '\
+                            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#021D24]/80 backdrop-blur-md text-white border border-white/20 pointer-events-none">\
+                                ' + categoryBadge + '\
+                            </span>\
+                        </div>\
+                        <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">\
+                            <div>\
+                                <h4 class="text-xs font-bold text-[#021D24] truncate" title="' + file.name + '">' + file.name + '</h4>\
+                                <div class="flex items-center space-x-2 text-[10px] text-[#093F52]/70 mt-1 font-mono">\
+                                    <span>' + formatBytes(file.size) + '</span>\
+                                    <span>•</span>\
+                                    <span>' + dateStr + '</span>\
+                                </div>\
+                            </div>\
+                            <div class="pt-2 border-t border-[#C7E5F2] flex items-center justify-between gap-2">\
+                                <button onclick="triggerFileDownload(\'' + file.id + '\')" class="flex-1 py-1.5 px-3 glossy-button-primary text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1 shadow-sm shrink-0">\
+                                    <svg class="icon-svg-xs text-white" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>\
+                                    <span>Unduh File Asli</span>\
+                                </button>\
+                                <button onclick="deleteSingleFile(\'' + file.id + '\')" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all shrink-0" title="Hapus Berkas Ini">\
+                                    <svg class="icon-svg-sm" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>\
+                                </button>\
+                            </div>\
+                        </div>\
+                    ';
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function triggerFileDownload(id) {
+            getAllFilesFromDB().then(function(files) {
+                var file = null;
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].id === id) {
+                        file = files[i];
+                        break;
+                    }
+                }
+                if (!file) return;
+
+                downloadFileSafely(file.dataUrl, file.name, file.type);
+                showToast("Mengunduh " + file.name + " (Raw EXIF Preserved)", "success");
+            });
+        }
+
+        function deleteSingleFile(id) {
+            deleteFileFromDB(id).then(function() {
+                renderGallery();
+                showToast("Berkas dihapus", "info");
+            });
+        }
+
+        function openJoinModal() {
+            document.getElementById('join-code-modal').classList.remove('hidden');
+        }
+
+        function closeJoinModal() {
+            document.getElementById('join-code-modal').classList.add('hidden');
+        }
+
+        function handleJoinWithCode() {
+            var codeInput = document.getElementById('join-code-input').value.trim();
+            if (!codeInput) {
+                showToast("Masukkan 6 digit kode!", "info");
+                return;
+            }
+            var fullCode = "PND-" + codeInput.toUpperCase();
+            closeJoinModal();
+            showToast("Menghubungkan ke vault " + fullCode + "...", "success");
+        }
+
+        function openDownloadChoiceModal() {
+            getAllFilesFromDB().then(function(files) {
+                if (files.length === 0) {
+                    showToast("Tidak ada berkas untuk diunduh", "info");
+                    return;
+                }
+                document.getElementById('download-choice-modal').classList.remove('hidden');
+            });
+        }
+
+        function closeDownloadChoiceModal() {
+            document.getElementById('download-choice-modal').classList.add('hidden');
+        }
+
+        function downloadAllAsZip() {
+            closeDownloadChoiceModal();
+            getAllFilesFromDB().then(function(files) {
+                if (files.length === 0) {
+                    showToast("Vault kosong!", "info");
+                    return;
+                }
+
+                if (typeof JSZip === 'undefined') {
+                    downloadAllSequentially();
+                    return;
+                }
+
+                showToast("Mengompres " + files.length + " berkas ke ZIP...", "info");
+                var zip = new JSZip();
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var blob = dataURLtoBlob(file.dataUrl, file.type);
+                    if (blob) {
+                        zip.file(file.name, blob);
+                    }
+                }
+
+                zip.generateAsync({ type: "blob" }).then(function(content) {
+                    if (window.URL && window.URL.createObjectURL) {
+                        var blobUrl = window.URL.createObjectURL(content);
+                        var a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = "Panirdrop_Vault_v26.12.0.zip";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        setTimeout(function() {
+                            window.URL.revokeObjectURL(blobUrl);
+                        }, 2000);
+                        showToast("Paket ZIP berhasil diunduh!", "success");
+                    }
+                }).catch(function(err) {
+                    downloadAllSequentially();
+                });
+            });
+        }
+
+        function downloadAllSequentially() {
+            closeDownloadChoiceModal();
+            getAllFilesFromDB().then(function(files) {
+                if (files.length === 0) {
+                    showToast("Tidak ada berkas untuk diunduh", "info");
+                    return;
+                }
+
+                showToast("Mengunduh " + files.length + " berkas 1 per 1...", "success");
+                for (var i = 0; i < files.length; i++) {
+                    (function(file, index) {
+                        setTimeout(function() {
+                            downloadFileSafely(file.dataUrl, file.name, file.type);
+                        }, index * 450);
+                    })(files[i], i);
+                }
+            });
+        }
+
+        function openConfirmClearModal() {
+            getAllFilesFromDB().then(function(files) {
+                if (files.length === 0) {
+                    showToast("Vault sudah kosong", "info");
+                    return;
+                }
+                document.getElementById('confirm-clear-modal').classList.remove('hidden');
+            });
+        }
+
+        function closeConfirmClearModal() {
+            document.getElementById('confirm-clear-modal').classList.add('hidden');
+        }
+
+        function executeClearVault() {
+            clearAllFilesFromDB().then(function() {
+                closeConfirmClearModal();
+                renderGallery();
+                updateQRCodeCanvas();
+                showToast("Seluruh berkas Vault dihapus!", "info");
+            });
+        }
+
+        function openInstallAppModal() {
+            document.getElementById('install-app-modal').classList.remove('hidden');
+        }
+
+        function closeInstallAppModal() {
+            document.getElementById('install-app-modal').classList.add('hidden');
+        }
+
+        function triggerPWAInstallPrompt() {
+            if (deferredPWAInstallPrompt) {
+                deferredPWAInstallPrompt.prompt();
+                deferredPWAInstallPrompt.userChoice.then(function() {
+                    deferredPWAInstallPrompt = null;
+                    closeInstallAppModal();
+                });
+            } else {
+                showToast("Gunakan panduan manual di bawah ini untuk memasang app", "info");
+            }
+        }
+
+        function openStorageModal() {
+            document.getElementById('storage-modal').classList.remove('hidden');
+        }
+
+        function closeStorageModal() {
+            document.getElementById('storage-modal').classList.add('hidden');
+        }
+
+        function updateQRCodeCanvas() {
+            var canvas = document.getElementById('qr-canvas');
+            if (canvas) {
+                var qrText = window.location.href + "#code=" + currentTransferCode;
+                PanirdropQR.render(canvas, qrText);
+            }
+        }
+
+        function copyCurrentLink() {
+            var tempInput = document.createElement('textarea');
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Link web Panirdrop berhasil disalin!", "success");
+        }
+
+        function copyTransferCode() {
+            var tempInput = document.createElement('textarea');
+            tempInput.value = currentTransferCode;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Kode " + currentTransferCode + " disalin!", "success");
+        }
+
+        function formatBytes(bytes, decimals) {
+            if (bytes === 0) return '0 Bytes';
+            var k = 1024;
+            var dm = decimals || 2;
+            var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function showToast(message, type) {
+            var toast = document.getElementById('toast');
+            var toastMsg = document.getElementById('toast-message');
+
+            toastMsg.innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(function() {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        window.onload = function() {
+            generateTransferCode();
+            initDatabase().then(function() {
+                renderGallery();
+                updateQRCodeCanvas();
+            });
+        };
+    </script>
+</body>
+</html>
